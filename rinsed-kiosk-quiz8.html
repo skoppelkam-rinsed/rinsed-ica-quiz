@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Rinsed | What Does Your Car Wash Future Hold?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+
+/* ─────────────────────────────────────────
+   RESET & ROOT
+───────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  --black:   #002D36;
+  --white:   #F2EDE4;
+  --orange:  #CCDB4B;
+  --blue:    #00A8DC;
+  --purple:  #9B59FF;
+  --card:    #003744;
+  --border:  rgba(242,237,228,0.10);
+  --muted:   rgba(242,237,228,0.38);
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: #002D36;
+  overflow: hidden;
+}
+
+/* ─────────────────────────────────────────
+   CANVAS  — fixed 1080×1920, scales to fit
+───────────────────────────────────────── */
+#canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 1080px;
+  height: 1920px;
+  background: url('images/image-1-198940b9c5.jpg') center/cover no-repeat;
+  overflow: hidden;
+  transform-origin: top left;
+  font-family: 'DM Mono', monospace;
+  color: var(--white);
+}
+
+/* ── FLOATING STICKERS ── */
+.sticker {
+  position: absolute;
+  font-size: 72px;
+  pointer-events: none;
+  user-select: none;
+  z-index: 10;
+  animation: float 6s ease-in-out infinite;
+  filter: drop-shadow(0 4px 16px rgba(0,0,0,0.5));
+}
+@keyframes float {
+  0%,100% { transform: translateY(0px) rotate(var(--rot,0deg)); }
+  50%      { transform: translateY(-18px) rotate(calc(var(--rot,0deg) + 4deg)); }
+}
+
+/* scanlines */
+#canvas::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg, transparent, transparent 3px,
+    rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 4px
+  );
+  pointer-events: none;
+  z-index: 9000;
+}
+
+/* ─────────────────────────────────────────
+   SCREENS
+───────────────────────────────────────── */
+.screen {
+  position: absolute;
+  inset: 0;
+  width: 1080px;
+  height: 1920px;
+  display: flex;
+  flex-direction: column;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.screen.active {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ─────────────────────────────────────────
+   PERSISTENT HEADER
+───────────────────────────────────────── */
+.hdr {
+  flex-shrink: 0;
+  height: 104px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 60px;
+  border-bottom: 1px solid rgba(0,168,220,0.25);
+}
+.hdr-logo  { height: 40px; width: auto; }
+.hdr-label {
+  font-size: 16px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+
+/* ─────────────────────────────────────────
+   INTRO
+───────────────────────────────────────── */
+#s-intro {
+  background: transparent;
+  cursor: pointer;
+}
+.intro-inner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 80px 60px 100px;
+  position: relative;
+  overflow: hidden;
+}
+.intro-bg {
+  position: absolute;
+  bottom: -80px; right: -30px;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 520px;
+  line-height: 1;
+  color: rgba(204,219,75,0.05);
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -12px;
+}
+.intro-eyebrow {
+  font-size: 28px;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 36px;
+  animation: blink 2.6s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 55%{opacity:0.35} }
+
+.intro-h1 {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 178px;
+  line-height: 0.87;
+  letter-spacing: 2px;
+  margin-bottom: 36px;
+}
+.intro-h1 .accent { color: var(--orange); }
+
+.intro-sub {
+  font-size: 28px;
+  line-height: 1.55;
+  color: var(--white);
+  margin-bottom: 64px;
+  max-width: 720px;
+}
+
+.btn-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: var(--orange);
+  color: var(--black);
+  font-family: 'Bebas Neue', cursive;
+  font-size: 52px;
+  letter-spacing: 3px;
+  padding: 30px 72px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  align-self: flex-start;
+}
+.btn-cta:active { transform: scale(0.97); }
+
+.intro-tap {
+  margin-top: 28px;
+  font-size: 16px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--white);
+}
+
+/* ─────────────────────────────────────────
+   QUESTION
+───────────────────────────────────────── */
+#s-question { background: transparent; height: 1920px; }
+
+.q-inner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 48px 60px 100px;
+  justify-content: space-between;
+}
+
+/* progress bar */
+.q-progress-wrap {
+  height: 8px;
+  background: rgba(0,168,220,0.15);
+  margin-bottom: 48px;
+  position: relative;
+}
+.q-progress-bar {
+  height: 100%;
+  background: var(--blue);
+  transition: width 0.45s cubic-bezier(0.4,0,0.2,1);
+  position: relative;
+  box-shadow: 0 0 12px rgba(0,168,220,0.6);
+}
+.q-progress-bar::after {
+  content: '';
+  position: absolute;
+  right: -7px; top: -5px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--blue);
+  box-shadow: 0 0 20px rgba(0,168,220,0.9);
+}
+
+/* meta row */
+.q-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 44px;
+}
+.q-counter {
+  font-size: 17px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+.q-back {
+  background: transparent;
+  border: 2px solid var(--blue);
+  color: var(--blue);
+  font-family: 'DM Mono', monospace;
+  font-size: 18px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 16px 40px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.q-back:hover { background: var(--blue); color: var(--white); }
+
+/* question text */
+.q-text {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 108px;
+  line-height: 0.95;
+  letter-spacing: 1px;
+  color: var(--white);
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+/* answers — single column, always legible */
+.q-answers {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.q-ans {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding: 44px 48px;
+  background: var(--card);
+  border: 1px solid rgba(0,168,220,0.25);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  text-align: left;
+}
+/* fill sweep on tap */
+.q-ans::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--orange);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.22s ease;
+  z-index: 0;
+}
+.q-ans.hover-state::before { transform: scaleX(1); }
+.q-ans.selected::before    { transform: scaleX(1); }
+
+.q-ans:hover:not(.selected) { border-color: var(--blue); }
+
+.q-letter {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 40px;
+  line-height: 1;
+  color: var(--blue);
+  min-width: 40px;
+  position: relative;
+  z-index: 1;
+  transition: color 0.15s;
+  flex-shrink: 0;
+  opacity: 1;
+}
+.q-ans.selected .q-letter,
+.q-ans.hover-state .q-letter { color: var(--black); }
+
+.q-ans-text {
+  font-size: 26px;
+  line-height: 1.35;
+  position: relative;
+  z-index: 1;
+  color: var(--white);
+  transition: color 0.15s;
+  text-align: left;
+}
+.q-ans.selected .q-ans-text,
+.q-ans.hover-state .q-ans-text { color: var(--black); }
+
+/* ─────────────────────────────────────────
+   LOADING
+───────────────────────────────────────── */
+#s-loading {
+  background: transparent;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+.load-icon {
+  font-size: 110px;
+  margin-bottom: 52px;
+  animation: wobble 1.4s ease-in-out infinite;
+}
+@keyframes wobble {
+  0%,100% { transform: scale(1) rotate(0deg); }
+  30%     { transform: scale(1.12) rotate(-6deg); }
+  70%     { transform: scale(0.94) rotate(5deg); }
+}
+.load-title {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 76px;
+  letter-spacing: 3px;
+  text-align: center;
+  margin-bottom: 52px;
+  line-height: 1;
+}
+.load-dots {
+  display: flex;
+  gap: 18px;
+  margin-bottom: 40px;
+}
+.load-dot {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--orange);
+  animation: dotpop 0.9s ease-in-out infinite;
+}
+.load-dot:nth-child(2) { animation-delay: 0.18s; background: var(--blue); }
+.load-dot:nth-child(3) { animation-delay: 0.36s; background: var(--purple); }
+@keyframes dotpop { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-18px)} }
+.load-sub {
+  font-size: 18px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--white);
+}
+
+/* ─────────────────────────────────────────
+   RESULT
+───────────────────────────────────────── */
+#s-result { background: transparent; }
+
+.res-inner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 52px 60px 60px;
+  overflow: hidden;
+}
+
+.res-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 22px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+.res-prefix {
+  font-size: 18px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+.res-name {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 148px;
+  line-height: 0.88;
+  letter-spacing: 2px;
+  margin-bottom: 28px;
+}
+.res-rule {
+  height: 5px;
+  width: 100px;
+  margin-bottom: 36px;
+}
+.res-form-header {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 48px;
+  letter-spacing: 2px;
+  color: var(--white);
+  margin-bottom: 20px;
+  margin-top: 8px;
+}
+.res-inline-form {
+  margin-top: auto;
+  padding-top: 8px;
+}
+.rif-field { margin-bottom: 14px; }
+.rif-input {
+  background: rgba(242,237,228,0.06);
+  border: 1px solid rgba(242,237,228,0.18);
+  color: var(--white);
+  font-family: 'DM Mono', monospace;
+  font-size: 22px;
+  padding: 20px 24px;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.rif-input:focus { border-color: var(--orange); }
+.rif-input::placeholder { color: rgba(242,237,228,0.25); }
+.rif-input.err { border-color: #ff4444; }
+.res-gif {
+  width: 100%;
+  margin-bottom: 32px;
+  flex-shrink: 0;
+  min-height: 0;
+}
+.res-gif iframe {
+  width: 100%;
+  height: 380px;
+  border: none;
+  display: block;
+  background: transparent;
+}
+.res-gif img {
+  width: 100%;
+  height: 380px;
+  object-fit: cover;
+  display: block;
+  background: transparent;
+}
+.res-gif p { display: none; }
+.res-insight {
+  font-family: 'Inter', sans-serif;
+  font-size: 26px;
+  line-height: 1.55;
+  color: var(--orange);
+  margin-bottom: 24px;
+  max-width: 900px;
+  font-style: italic;
+  flex-shrink: 0;
+}
+.res-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 26px;
+  line-height: 1.65;
+  color: var(--white);
+  margin-bottom: 40px;
+  max-width: 900px;
+  flex-shrink: 0;
+}
+.res-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 48px;
+}
+.res-tag {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 24px;
+  letter-spacing: 2px;
+  padding: 12px 28px;
+  border: 2px solid;
+}
+
+.res-ctas {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: auto;
+}
+.btn-outline {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid rgba(242,237,228,0.22);
+  color: var(--muted);
+  font-family: 'Bebas Neue', cursive;
+  font-size: 38px;
+  letter-spacing: 3px;
+  padding: 24px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-outline:hover { border-color: var(--white); color: var(--white); }
+
+/* ─────────────────────────────────────────
+   SALESPERSON
+───────────────────────────────────────── */
+#s-sales {
+  background: transparent;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 88px 72px 80px;
+}
+.sales-emoji {
+  font-size: 130px;
+  margin-bottom: 52px;
+}
+.sales-h {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 108px;
+  line-height: 0.9;
+  letter-spacing: 2px;
+  margin-bottom: 36px;
+}
+.sales-h span { color: var(--orange); display: block; }
+.sales-sub {
+  font-size: 25px;
+  line-height: 1.65;
+  color: var(--white);
+  max-width: 820px;
+  margin: 0 auto 60px;
+}
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+  font-size: 16px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 18px 52px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+  margin-top: 20px;
+}
+.btn-ghost:hover { border-color: rgba(242,237,228,0.3); color: rgba(242,237,228,0.5); }
+
+/* ─────────────────────────────────────────
+   FORM
+───────────────────────────────────────── */
+#s-form { background: transparent; }
+.form-inner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 52px 60px 60px;
+  overflow: hidden;
+}
+.form-eyebrow {
+  font-size: 15px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 20px;
+}
+.form-h {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 118px;
+  line-height: 0.9;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+.form-h span { color: var(--orange); }
+.form-sub {
+  font-size: 22px;
+  color: var(--white);
+  margin-bottom: 44px;
+  line-height: 1.5;
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.f-field {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-bottom: 20px;
+}
+.f-label {
+  font-size: 13px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--orange);
+}
+.f-input, .f-select {
+  background: rgba(242,237,228,0.04);
+  border: 1px solid var(--border);
+  color: var(--white);
+  font-family: 'DM Mono', monospace;
+  font-size: 21px;
+  padding: 20px 24px;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.2s, background 0.2s;
+  -webkit-appearance: none;
+}
+.f-input:focus, .f-select:focus {
+  border-color: var(--orange);
+  background: rgba(204,219,75,0.04);
+}
+.f-input::placeholder { color: rgba(242,237,228,0.2); }
+.f-select option { background: #111; }
+.f-input.err { border-color: #ff3b3b; }
+
+/* ─────────────────────────────────────────
+   THANKS
+───────────────────────────────────────── */
+#s-thanks {
+  background: transparent;
+  align-items: center;
+  justify-content: center;
+  padding: 88px 72px 80px;
+  text-align: center;
+}
+.thanks-emoji { font-size: 120px; margin-bottom: 48px; }
+.thanks-h {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 122px;
+  line-height: 0.9;
+  letter-spacing: 2px;
+  margin-bottom: 32px;
+}
+.thanks-h span { color: var(--orange); display: block; }
+.thanks-sub {
+  font-size: 24px;
+  line-height: 1.65;
+  color: var(--white);
+  max-width: 760px;
+  margin: 0 auto 44px;
+}
+.thanks-booth {
+  font-size: 17px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 56px;
+}
+
+</style>
+</head>
+<body>
+<div id="canvas">
+
+  <!-- ══ INTRO ══════════════════════════════════ -->
+  <div class="screen active" id="s-intro">
+    <header class="hdr">
+      <img class="hdr-logo" src="images/image-2-a301319106.png" alt="Rinsed">
+      <span class="hdr-label">Booth #822</span>
+    </header>
+    <div class="intro-inner">
+      <div class="sticker" style="top:148px;left:140px;font-size:96px;--rot:-11deg;animation-delay:0s;">🔮</div>
+      <div class="sticker" style="top:680px;right:220px;font-size:76px;--rot:13deg;animation-delay:0.9s;">✨</div>
+      <div class="sticker" style="top:460px;left:44px;font-size:100px;--rot:-8deg;animation-delay:0.4s;">🚗</div>
+      <div class="sticker" style="top:1380px;right:160px;font-size:88px;--rot:14deg;animation-delay:1.2s;">💸</div>
+      <div class="sticker" style="top:130px;right:72px;font-size:82px;--rot:18deg;animation-delay:0.3s;">🏆</div>
+      <div class="sticker" style="top:420px;right:320px;font-size:78px;--rot:-15deg;animation-delay:1.1s;">📊</div>
+      <div class="sticker" style="top:645px;right:220px;font-size:84px;--rot:11deg;animation-delay:0.6s;">🎯</div>
+      <div class="sticker" style="top:1126px;right:348px;font-size:80px;--rot:-9deg;animation-delay:0.5s;">💧</div>
+      <div class="intro-bg">?</div>
+      <p class="intro-eyebrow">✦ Take the quiz &nbsp;·&nbsp; ICA 2026 ✦</p>
+      <h1 class="intro-h1">
+        WHAT DOES<br>
+        YOUR CAR WASH<br>
+        <span class="accent">FUTURE</span><br>
+        HOLD?
+      </h1>
+      <p class="intro-sub">Tell us about your wash.<br>We'll show you what's next.</p>
+      <button class="btn-cta" id="start-btn">FIND OUT NOW &rarr;</button>
+      <p class="intro-tap">— or tap anywhere to begin —</p>
+    </div>
+  </div>
+
+  <!-- ══ QUESTION ════════════════════════════════ -->
+  <div class="screen" id="s-question">
+    <header class="hdr">
+      <img class="hdr-logo" src="images/image-2-a301319106.png" alt="Rinsed">
+      <span class="hdr-label" id="q-label">Question 1 of 5</span>
+    </header>
+    <div style="position:relative;">
+      <div class="sticker" id="q-sticker" style="top:24px;right:48px;font-size:80px;--rot:10deg;animation-delay:0.3s;opacity:0.7;"></div>
+    </div>
+    <div class="q-inner">
+      <div class="q-progress-wrap">
+        <div class="q-progress-bar" id="q-bar" style="width:0%"></div>
+      </div>
+      <div class="q-meta">
+        <button class="q-back" id="q-back-btn" onclick="goBack()" style="visibility:hidden">&#8592; Back</button>
+        <span></span>
+      </div>
+      <div class="q-text" id="q-text"></div>
+      <div class="q-answers" id="q-answers"></div>
+    </div>
+  </div>
+
+  <!-- ══ LOADING ════════════════════════════════ -->
+  <div class="screen" id="s-loading">
+    <header class="hdr">
+      <img class="hdr-logo" src="images/image-2-a301319106.png" alt="Rinsed">
+      <span class="hdr-label">Booth #822</span>
+    </header>
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;">
+      <div class="sticker" style="top:180px;left:80px;font-size:60px;--rot:-14deg;animation-delay:0.2s;">🔮</div>
+      <div class="sticker" style="top:280px;right:80px;font-size:56px;--rot:10deg;animation-delay:1s;">⚡</div>
+      <div class="sticker" style="bottom:200px;left:100px;font-size:64px;--rot:-8deg;animation-delay:0.6s;">🧠</div>
+      <div class="load-icon" id="load-icon">🔮</div>
+      <div class="load-title">CALCULATING<br>YOUR FUTURE</div>
+      <div class="load-dots">
+        <div class="load-dot"></div>
+        <div class="load-dot"></div>
+        <div class="load-dot"></div>
+      </div>
+      <p class="load-sub" id="load-sub">Reading the data...</p>
+    </div>
+  </div>
+
+  <!-- ══ RESULT ══════════════════════════════════ -->
+  <div class="screen" id="s-result">
+    <header class="hdr">
+      <img class="hdr-logo" src="images/image-2-a301319106.png" alt="Rinsed">
+      <span class="hdr-label">Booth #822</span>
+    </header>
+    <div class="res-inner" style="position:relative;">
+      <div class="sticker" id="res-sticker-1" style="top:60px;right:48px;font-size:88px;--rot:12deg;animation-delay:0s;"></div>
+      <div class="sticker" id="res-sticker-2" style="top:200px;right:100px;font-size:60px;--rot:-8deg;animation-delay:1s;opacity:0.6;"></div>
+      <p  class="res-eyebrow" id="res-eyebrow"></p>
+      <p  class="res-prefix">YOUR FUTURE IS</p>
+      <h2 class="res-name"   id="res-name"></h2>
+      <div class="res-rule"  id="res-rule"></div>
+      <p  class="res-insight" id="res-insight"></p>
+  <div class="res-gif"   id="res-gif"></div>
+  <p  class="res-desc"   id="res-desc"></p>
+      <div class="res-inline-form" id="res-inline-form">
+        <p class="res-form-header">GET YOUR FULL RESULTS</p>
+        <div class="rif-field"><input class="rif-input" id="rif-first" type="text" placeholder="First name"></div>
+        <div class="rif-field"><input class="rif-input" id="rif-email" type="email" placeholder="Email address"></div>
+        <div class="rif-field"><input class="rif-input" id="rif-wash"  type="text" placeholder="Car wash name"></div>
+        <button class="btn-cta" style="width:100%;justify-content:center;font-size:38px;margin-top:8px;" onclick="submitInlineForm()">CLAIM YOUR FULL RESULTS &rarr;</button>
+        <button class="btn-ghost" style="width:100%;display:block;margin:20px auto 0;" onclick="reset()">&#8635; Start Over</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SALESPERSON ═════════════════════════════ -->
+  <div class="screen" id="s-sales">
+    <header class="hdr">
+      <img class="hdr-logo" src="images/image-2-a301319106.png" alt="Rinsed">
+      <span class="hdr-label">Booth #822</span>
+    </header>
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 72px;text-align:center;">
+      <div class="sales-emoji">👋</div>
+      <h2 class="sales-h">FIND US<span>RIGHT NOW</span></h2>
+      <p class="sales-sub">Head to the back of the booth and ask for a Rinsed team member. Show them your result and they'll walk you through exactly what it means for your wash.</p>
+      <button class="btn-cta" onclick="show('s-form')">OR LEAVE YOUR INFO &rarr;</button>
+      <button class="btn-ghost" onclick="reset()">&#8635; Start Over</button>
+    </div>
+  </div>
+
+  <!-- ══ FORM ════════════════════════════════════ -->
+  <div class="screen" id="s-form">
+    <header class="hdr">
+      <img class="hdr-logo" src="images/image-2-a301319106.png" alt="Rinsed">
+      <span class="hdr-label">Booth #822</span>
+    </header>
+    <div class="form-inner">
+      <p class="form-eyebrow">✦ Claim your strategy session</p>
+      <h2 class="form-h">PUT YOUR<br><span>NAME ON</span><br>WHAT'S NEXT.</h2>
+      <p class="form-sub">Our team will reach out with a personalised walkthrough.</p>
+      <div class="form-row">
+        <div class="f-field">
+          <label class="f-label">First Name *</label>
+          <input class="f-input" id="f-first" type="text" placeholder="First">
+        </div>
+        <div class="f-field">
+          <label class="f-label">Last Name</label>
+          <input class="f-input" id="f-last" type="text" placeholder="Last">
+        </div>
+      </div>
+      <div class="f-field">
+        <label class="f-label">Car Wash Name</label>
+        <input class="f-input" id="f-wash" type="text" placeholder="Your wash">
+      </div>
+      <div class="f-field">
+        <label class="f-label">Email Address *</label>
+        <input class="f-input" id="f-email" type="email" placeholder="you@yourwash.com">
+      </div>
+      <div class="f-field" style="margin-bottom:36px;">
+        <label class="f-label">I'm most interested in...</label>
+        <select class="f-select" id="f-interest">
+          <option value="">Select a product</option>
+          <option value="driveway">Driveway Checkouts — transact beyond your POS</option>
+          <option value="mo">Mo AI — run your wash in one conversation</option>
+          <option value="coaching">AI Coaching — empower your managers</option>
+          <option value="personal">Personalisation — turn behaviour into loyalty</option>
+          <option value="crm">The Car Wash CRM — grow and retain members</option>
+          <option value="all">All of the above</option>
+        </select>
+      </div>
+      <button class="btn-cta" style="width:100%;font-size:42px;justify-content:center;" onclick="submitForm()">CLAIM MY SPOT &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ══ THANKS ══════════════════════════════════ -->
+  <div class="screen" id="s-thanks">
+    <header class="hdr">
+      <img class="hdr-logo" src="images/image-2-a301319106.png" alt="Rinsed">
+      <span class="hdr-label">Booth #822</span>
+    </header>
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 72px;text-align:center;position:relative;">
+      <div class="sticker" style="top:120px;left:60px;font-size:72px;--rot:-14deg;animation-delay:0.2s;">🎊</div>
+      <div class="sticker" style="top:200px;right:60px;font-size:64px;--rot:10deg;animation-delay:0.9s;">⭐</div>
+      <div class="sticker" style="bottom:180px;left:80px;font-size:60px;--rot:-8deg;animation-delay:0.5s;">🚀</div>
+      <div class="sticker" style="bottom:250px;right:70px;font-size:68px;--rot:16deg;animation-delay:1.3s;">💧</div>
+      <div class="thanks-emoji">🎉</div>
+      <h2 class="thanks-h">YOU'RE ON<span>THE LIST.</span></h2>
+      <p class="thanks-sub">Our team will find you at the show — or reach out directly. The future is closer than you think.</p>
+      <p class="thanks-booth">Find us at Booth #822</p>
+      <button class="btn-cta" onclick="reset()" style="font-size:38px;">&#8635; START AGAIN</button>
+    </div>
+  </div>
+
+</div><!-- end #canvas -->
+
+<script>
+/* ─────────────────────────────────────────
+   DATA
+───────────────────────────────────────── */
+const QS = [
+  {
+    q: "THERE'S A HUGE LINE OF CARS WAITING. WHAT ARE YOUR REPS DOING?",
+    a: [
+      { t:"Standing at the kiosk, waiting for each car to pull forward",    s:{freedom:3,action:0,coaching:0,personal:0} },
+      { t:"Working the line and pitching, but customers still pay at the kiosk", s:{freedom:2,action:0,coaching:1,personal:0} },
+      { t:"Closing memberships on a tablet right in the lane",               s:{freedom:0,action:0,coaching:1,personal:0} },
+      { t:"Dealing with frustrated customers — the line isn't moving and people are leaving", s:{freedom:3,action:0,coaching:0,personal:0} }
+    ]
+  },
+  {
+    q: "WHEN A MEMBER HASN'T VISITED IN THREE WEEKS, WHAT HAPPENS?",
+    a: [
+      { t:"Honestly, probably nothing — we don't have great visibility into that", s:{freedom:0,action:1,coaching:0,personal:3} },
+      { t:"Someone on the team notices and sends something manually",       s:{freedom:0,action:2,coaching:0,personal:2} },
+      { t:"An automated message goes out, but it's the same for everyone", s:{freedom:0,action:0,coaching:0,personal:3} },
+      { t:"They're already flagged as at-risk and in a targeted retention flow", s:{freedom:0,action:1,coaching:0,personal:0} }
+    ]
+  },
+  {
+    q: "HOW DOES YOUR TEAM KNOW IF A SALES REP HAD A GOOD WEEK?",
+    a: [
+      { t:"Gut feel and self-reporting — we take the rep's word for it", s:{freedom:0,action:0,coaching:3,personal:0} },
+      { t:"Managers review the data, but it's manual and inconsistent",    s:{freedom:0,action:1,coaching:2,personal:0} },
+      { t:"We have dashboards, but coaching conversations don't happen regularly", s:{freedom:0,action:0,coaching:2,personal:1} },
+      { t:"Every presentation is scored automatically and reps get weekly feedback", s:{freedom:0,action:0,coaching:0,personal:0} }
+    ]
+  },
+  {
+    q: "IF YOU WANT TO BUILD AN AUDIENCE AND SEND A CAMPAIGN TODAY, WHAT HAPPENS?",
+    a: [
+      { t:"It goes on the to-do list — takes a few days to get set up",    s:{freedom:0,action:3,coaching:0,personal:0} },
+      { t:"I can do it, but it's a lot of steps through our CRM", s:{freedom:0,action:1,coaching:0,personal:0} },
+      { t:"We have templates but targeting and copy still take real effort", s:{freedom:0,action:1,coaching:0,personal:2} },
+      { t:"I use AI to build a campaign in minutes",                  s:{freedom:0,action:0,coaching:0,personal:0} }
+    ]
+  },
+  {
+    q: "WHAT'S THE BIGGEST GAP BETWEEN WHERE YOU ARE AND WHERE YOU WANT TO BE?",
+    a: [
+      { t:"Moving more cars through the driveway, faster",     s:{freedom:3,action:0,coaching:0,personal:0} },
+      { t:"Knowing which members are about to leave — before they do",     s:{freedom:0,action:0,coaching:0,personal:3} },
+      { t:"Building a consistent sales culture across every location",     s:{freedom:0,action:0,coaching:3,personal:0} },
+      { t:"Doing more with less — I don't have time to learn a new platform",     s:{freedom:0,action:3,coaching:0,personal:0} }
+    ]
+  }
+];
+
+const RESULTS = {
+  freedom: {
+    gif:      "B36PaeuCgP6tuVRwfI",
+    eyebrow:  "TRANSACT ANYWHERE — NOT JUST AT THE KIOSK.",
+    insight:  "Congrats — your team has great energy and zero excuses not to close. Except for that kiosk. That kiosk is doing a lot of damage.",
+    name:     "FREEDOM",
+    color:    "#CCDB4B",
+    desc:     "Your best sales moment happens in the driveway — not at the paystation. But right now, the kiosk is getting in the way...",
+    tags:     [{n:"DRIVEWAY CHECKOUTS",bg:"#CCDB4B",fg:"#002D36"},{n:"SALESPATH",bg:"#00A8DC",fg:"#F2EDE4"}],
+    interest: "driveway"
+  },
+  action: {
+    gif:      "63oO0EPUrjyXMXBjU4",
+    eyebrow:  "INSTEAD OF LEARNING A PLATFORM, JUST TALK TO IT.",
+    insight:  "You know exactly what you want to do. You just need someone to actually do it. Enter Mo.",
+    name:     "ACTION",
+    color:    "#CCDB4B",
+    desc:     "Mo is your AI assistant, built into your Rinsed admin panel. Tell him what you want to accomplish — and it's done. But there's more to it...",
+    tags:     [{n:"MO / RINSED ASSISTANT",bg:"#CCDB4B",fg:"#002D36"},{n:"CRM AUTOMATION",bg:"#00A8DC",fg:"#F2EDE4"}],
+    interest: "mo"
+  },
+  coaching: {
+    gif:      "Kzl6PScOdugrVMqzWK",
+    eyebrow:  "AUTOMATED FEEDBACK SO EVERY REP IMPROVES EVERY WEEK.",
+    insight:  "Some of your reps are killing it. Others... less so. And honestly? Nobody really knows which is which.",
+    name:     "COACHING",
+    color:    "#9B59FF",
+    desc:     "AI scores every Salespath presentation automatically. Managers get a structured weekly workflow. Every rep gets personalized goals. Here's how it works...",
+    tags:     [{n:"SALESPATH",bg:"#9B59FF",fg:"#F2EDE4"},{n:"GUIDED COACHING",bg:"#CCDB4B",fg:"#002D36"}],
+    interest: "coaching"
+  },
+  personal: {
+    gif:      "4VVxSZwKcRr0hOhfvr",
+    eyebrow:  "PREDICT WHO'S ABOUT TO LEAVE — BEFORE THEY DO.",
+    insight:  "Your members are leaving. They're not mad, they're just gone. And you had no idea it was coming.",
+    name:     "PERSONALIZATION",
+    color:    "#00A8DC",
+    desc:     "Rinsed's advanced machine learning model assigns every active member a churn risk score. The right offer, at exactly the right moment. But that's just the start...",
+    tags:     [{n:"CHURN PREDICTION MODEL",bg:"#00A8DC",fg:"#F2EDE4"},{n:"RETENTION CAMPAIGNS",bg:"#9B59FF",fg:"#F2EDE4"}],
+    interest: "personal"
+  }
+};
+
+const LOAD_LINES = ["Analysing your wash...","Running the numbers...","Mapping your path forward...","Building your future..."];
+const LOAD_ICONS = ["🔮","🧠","📊","✨","🌀"];
+const LETTERS    = ["A","B","C","D"];
+
+/* ─────────────────────────────────────────
+   STATE
+───────────────────────────────────────── */
+let S = freshState();
+function freshState() {
+  return { q:0, scores:{freedom:0,action:0,coaching:0,personal:0}, history:[], result:null };
+}
+
+/* ─────────────────────────────────────────
+   SCALE TO FIT
+───────────────────────────────────────── */
+function scale() {
+  var c = document.getElementById("canvas");
+  var sx = window.innerWidth  / 1080;
+  var sy = window.innerHeight / 1920;
+  var s  = Math.min(sx, sy);
+  var ox = (window.innerWidth  - 1080 * s) / 2;
+  var oy = (window.innerHeight - 1920 * s) / 2;
+  c.style.transform = "scale(" + s + ")";
+  c.style.left = ox + "px";
+  c.style.top  = oy + "px";
+  c.style.position = "fixed";
+}
+scale();
+window.addEventListener("resize", scale);
+
+/* ─────────────────────────────────────────
+   SCREEN SWITCHING
+───────────────────────────────────────── */
+function show(id) {
+  var screens = document.querySelectorAll(".screen");
+  screens.forEach(function(s) {
+    s.classList.remove("active");
+  });
+  var target = document.getElementById(id);
+  if (target) target.classList.add("active");
+}
+
+/* ─────────────────────────────────────────
+   QUIZ
+───────────────────────────────────────── */
+function startQuiz() {
+  S = freshState();
+  renderQ();
+  show("s-question");
+}
+
+function renderQ() {
+  var q   = QS[S.q];
+  var tot = QS.length;
+  var pct = (S.q / tot) * 100;
+
+  document.getElementById("q-label").textContent = "Question " + (S.q + 1) + " of " + tot;
+  var qStickers = ["🚗","🔒","🏆","📣","🎯"];
+  var qs = document.getElementById("q-sticker");
+  if (qs) qs.textContent = qStickers[S.q] || "";
+  document.getElementById("q-bar").style.width   = pct + "%";
+  document.getElementById("q-text").textContent  = q.q;
+
+  var backBtn = document.getElementById("q-back-btn");
+  backBtn.style.visibility = "visible";
+
+  var container = document.getElementById("q-answers");
+  container.innerHTML = "";
+
+  q.a.forEach(function(ans, i) {
+    var btn = document.createElement("button");
+    btn.className = "q-ans";
+    btn.innerHTML =
+      "<span class='q-letter'>" + LETTERS[i] + "</span>" +
+      "<span class='q-ans-text'>" + ans.t + "</span>";
+
+    // hover states for non-touch
+    btn.addEventListener("mouseenter", function() { btn.classList.add("hover-state"); });
+    btn.addEventListener("mouseleave", function() { btn.classList.remove("hover-state"); });
+
+    btn.addEventListener("click", function() { pickAnswer(i); });
+    container.appendChild(btn);
+  });
+}
+
+function pickAnswer(idx) {
+  var q   = QS[S.q];
+  var ans = q.a[idx];
+
+  // Lock all buttons
+  var btns = document.querySelectorAll(".q-ans");
+  btns.forEach(function(b) { b.style.pointerEvents = "none"; });
+  btns[idx].classList.add("selected");
+  btns[idx].classList.remove("hover-state");
+
+  // Save history for back
+  S.history.push({ qi: S.q, ai: idx, scoreSnap: Object.assign({}, S.scores) });
+
+  // Add score
+  Object.keys(ans.s).forEach(function(k) { S.scores[k] += ans.s[k]; });
+
+  setTimeout(function() {
+    S.q++;
+    if (S.q < QS.length) {
+      renderQ();
+    } else {
+      doLoading();
+    }
+  }, 460);
+}
+
+function goBack() {
+  if (S.history.length === 0) { show("s-intro"); return; }
+  var prev   = S.history.pop();
+  S.scores   = Object.assign({}, prev.scoreSnap);
+  S.q        = prev.qi;
+  renderQ();
+}
+
+/* ─────────────────────────────────────────
+   LOADING → RESULT
+───────────────────────────────────────── */
+function doLoading() {
+  document.getElementById("load-icon").textContent = LOAD_ICONS[Math.floor(Math.random() * LOAD_ICONS.length)];
+  document.getElementById("load-sub").textContent  = LOAD_LINES[Math.floor(Math.random() * LOAD_LINES.length)];
+  show("s-loading");
+  setTimeout(function() {
+    calcResult();
+    renderResult();
+    show("s-result");
+  }, 2500);
+}
+
+function calcResult() {
+  var best = -1, top = "freedom";
+  Object.keys(S.scores).forEach(function(k) {
+    if (S.scores[k] > best) { best = S.scores[k]; top = k; }
+  });
+  S.result = top;
+}
+
+function renderResult() {
+  var r = RESULTS[S.result];
+
+  var rStickers = {freedom:["🔓","🚗"],action:["⚡","🧠"],coaching:["🏆","📊"],personal:["🎯","💌"]};
+  var rs = rStickers[S.result] || ["✨","⭐"];
+  var rs1 = document.getElementById("res-sticker-1");
+  var rs2 = document.getElementById("res-sticker-2");
+  if (rs1) rs1.textContent = rs[0];
+  if (rs2) rs2.textContent = rs[1];
+  document.getElementById("res-gif").innerHTML = '<img src="https://media.giphy.com/media/' + r.gif + '/giphy.gif" alt="">';
+  document.getElementById("res-eyebrow").textContent     = r.eyebrow;
+  document.getElementById("res-insight").textContent     = r.insight;
+  document.getElementById("res-eyebrow").style.color     = r.color;
+  document.getElementById("res-name").textContent        = r.name;
+  document.getElementById("res-name").style.color        = r.color;
+  document.getElementById("res-rule").style.background   = r.color;
+  document.getElementById("res-desc").textContent        = r.desc;
+
+
+}
+
+/* ─────────────────────────────────────────
+   FORM
+───────────────────────────────────────── */
+function show_form() {
+  if (S.result && RESULTS[S.result]) {
+    var sel = document.getElementById("f-interest");
+    if (sel) sel.value = RESULTS[S.result].interest;
+  }
+  show("s-form");
+}
+
+function submitForm() {
+  var first = document.getElementById("f-first");
+  var email = document.getElementById("f-email");
+  var ok    = true;
+
+  [first, email].forEach(function(el) {
+    if (!el.value.trim()) { el.classList.add("err"); ok = false; }
+    else el.classList.remove("err");
+  });
+  if (!ok) return;
+
+  // TODO: POST to HubSpot
+  console.log("Lead:", {
+    first:    first.value.trim(),
+    last:     document.getElementById("f-last").value.trim(),
+    wash:     document.getElementById("f-wash").value.trim(),
+    email:    email.value.trim(),
+    interest: document.getElementById("f-interest").value,
+    result:   S.result
+  });
+
+  show("s-thanks");
+  setTimeout(reset, 20000);
+}
+
+/* ─────────────────────────────────────────
+   RESET
+───────────────────────────────────────── */
+function submitInlineForm() {
+  var first = document.getElementById("rif-first");
+  var email = document.getElementById("rif-email");
+  var wash  = document.getElementById("rif-wash");
+  var ok = true;
+  [first, email].forEach(function(el) {
+    if (!el.value.trim()) { el.classList.add("err"); ok = false; }
+    else el.classList.remove("err");
+  });
+  if (!ok) return;
+  // TODO: POST to HubSpot
+  console.log("Lead:", { first: first.value.trim(), email: email.value.trim(), wash: wash.value.trim(), result: S.result });
+  show("s-thanks");
+  setTimeout(reset, 20000);
+}
+
+function reset() {
+  S = freshState();
+  ["f-first","f-last","f-wash","f-email"].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) { el.value = ""; el.classList.remove("err"); }
+  });
+  var sel = document.getElementById("f-interest");
+  if (sel) sel.value = "";
+  show("s-intro");
+}
+
+/* ─────────────────────────────────────────
+   WIRE UP EVENTS
+───────────────────────────────────────── */
+// start button
+document.getElementById("start-btn").addEventListener("click", function(e) {
+  e.stopPropagation();
+  startQuiz();
+});
+
+// tap anywhere on intro
+document.getElementById("s-intro").addEventListener("click", function() {
+  startQuiz();
+});
+
+// result screen CTA — patch onclick to use show_form
+document.querySelectorAll(".res-ctas .btn-cta")[0] && (function() {
+  document.querySelectorAll(".res-ctas .btn-cta")[0].onclick = function() { show_form(); };
+})();
+
+// sales screen "leave your info"
+var salesLeave = document.querySelector("#s-sales .btn-cta");
+if (salesLeave) salesLeave.onclick = function() { show_form(); };
+
+// idle reset — 90s on non-form screens
+var idleTimer;
+function resetIdle() {
+  clearTimeout(idleTimer);
+  var active = document.querySelector(".screen.active");
+  if (active && active.id !== "s-form") {
+    idleTimer = setTimeout(reset, 90000);
+  }
+}
+document.addEventListener("click",      resetIdle);
+document.addEventListener("touchstart", resetIdle);
+resetIdle();
+</script>
+</body>
+</html>
